@@ -7,6 +7,8 @@ paginated participant list.
 
 Built for **Flarum 2**.
 
+![The avatar strip on a Flarum discussion list](.github/screenshots/discussion-list.png)
+
 ```bash
 composer require ernestdefoe/discussion-participants
 ```
@@ -23,13 +25,30 @@ the same job in the browser, for anyone without shell access.
 
 ## What it does
 
-- **An avatar strip on every discussion row.** On its own line under the title
-  by default, or inline beside the reply count if you would rather rows stayed
-  one line tall.
-- **An overflow badge** counting the participants the strip has no room for.
-  Clicking it opens the full list, ten per page, with each person's post count
-  and a link to their profile.
-- **Profile cards on hover**, the same card Flarum shows on post authors.
+**An avatar strip on every discussion row**, on its own line under the title by
+default — or inline beside the reply count, if you would rather rows stayed one
+line tall.
+
+![The strip placed inline, beside the reply count](.github/screenshots/placement-inline.png)
+
+**An overflow badge** counting the participants the strip has no room for.
+Clicking it opens the full roster, ten per page, with each person's post count
+in that discussion and a link to their profile.
+
+![The participants modal, paginated, with post counts](.github/screenshots/participants-modal.png)
+
+**Profile cards on hover** — the same card Flarum shows on post authors, on the
+same timing.
+
+![A profile card revealed by hovering an avatar](.github/screenshots/hover-card.png)
+
+**It follows the reader's theme**, light or dark, and mirrors correctly under
+right-to-left languages.
+
+![The same list in dark mode](.github/screenshots/discussion-list-dark.png)
+
+And it stays honest as the discussion moves:
+
 - **Live.** A first-time replier's avatar appears without a refresh, and the
   counts move with it.
 - **Moderation-aware.** Hiding, restoring and deleting a post all update the
