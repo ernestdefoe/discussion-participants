@@ -105,6 +105,5 @@ return [
         ->serializeToForum('participantsPlacement', 'discussion-participants.placement')
         ->serializeToForum('participantsAvatarSize', 'discussion-participants.avatar_size')
         ->serializeToForum('participantsHoverCards', 'discussion-participants.hover_cards', 'boolval')
-        ->serializeToForum('participantsTags', 'discussion-participants.tags')
-        ->serializeToForum('participantsStripSize', 'discussion-participants.strip_size', 'intval'),
+        ->serializeToForum('participantsTags', 'discussion-participants.tags'),
 ];

@@ -51,19 +51,6 @@ class Settings
             : self::OP_NEVER;
     }
 
-    /**
-     * Where the strip sits on a discussion row: on its own line under the
-     * title, or out on the right beside the reply count.
-     */
-    public function placement(): string
-    {
-        $placement = (string) $this->get('placement', self::PLACEMENT_BELOW);
-
-        return in_array($placement, [self::PLACEMENT_BELOW, self::PLACEMENT_INLINE], true)
-            ? $placement
-            : self::PLACEMENT_BELOW;
-    }
-
     public function minParticipants(): int
     {
         return max(1, (int) $this->get('min_participants', 1));
@@ -72,16 +59,6 @@ class Settings
     public function showOverflow(): bool
     {
         return (bool) $this->get('show_overflow', true);
-    }
-
-    /**
-     * How many rows the eager load must fetch per discussion: one more than
-     * the strip so dropping the original poster still leaves a full strip,
-     * and one more again so we can tell "exactly full" from "there is more".
-     */
-    public function fetchSize(): int
-    {
-        return $this->stripSize() + 2;
     }
 
     /**
