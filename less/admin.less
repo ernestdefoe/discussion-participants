@@ -1,0 +1,55 @@
+.DiscussionParticipants-tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.DiscussionParticipants-tag {
+  padding: 4px 10px;
+  border: 1px solid var(--control-bg);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted-color);
+  font-size: 13px;
+  cursor: pointer;
+
+  &.active {
+    border-color: var(--dp-tag-color, var(--primary-color));
+    background: var(--dp-tag-color, var(--primary-color));
+    color: #fff;
+  }
+}
+
+.DiscussionParticipants-rebuild {
+  margin-top: 8px;
+}
+
+.DiscussionParticipants-progress {
+  position: relative;
+  height: 20px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: var(--control-bg);
+  overflow: hidden;
+}
+
+.DiscussionParticipants-progressBar {
+  height: 100%;
+  background: var(--primary-color);
+  transition: width 0.2s ease-out;
+}
+
+.DiscussionParticipants-progressLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.DiscussionParticipants-rebuildStatus {
+  margin-top: 8px;
+}

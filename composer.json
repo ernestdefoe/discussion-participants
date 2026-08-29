@@ -1,0 +1,46 @@
+{
+    "name": "ernestdefoe/discussion-participants",
+    "description": "Shows the avatars of everyone who has posted in a discussion, right in the discussion list — with an overflow badge and a paginated participants modal.",
+    "keywords": [
+        "flarum",
+        "flarum-extension",
+        "participants",
+        "avatars",
+        "discussion-list"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ernest Defoe",
+            "email": "ernestdefoe@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ernestdefoe/discussion-participants/issues",
+        "source": "https://github.com/ernestdefoe/discussion-participants"
+    },
+    "require": {
+        "php": "^8.3",
+        "flarum/core": "^2.0"
+    },
+    "suggest": {
+        "flarum/tags": "Limit the avatar strip to chosen tags (^2.0)."
+    },
+    "autoload": {
+        "psr-4": {
+            "Ernestdefoe\\DiscussionParticipants\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Discussion Participants",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-users",
+                "backgroundColor": "#0ea5e9",
+                "color": "#fff"
+            }
+        }
+    }
+}

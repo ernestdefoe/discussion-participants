@@ -1,0 +1,200 @@
+// Written with logical properties throughout (margin-inline-start, not
+// margin-left) so the stack, its overlap and the badge all mirror
+// correctly under an RTL language without a second stylesheet.
+
+.DiscussionParticipants {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+
+  --dp-size: 24px;
+  --dp-overlap: -6px;
+
+  &.DiscussionParticipants--small {
+    --dp-size: 20px;
+    --dp-overlap: -5px;
+  }
+
+  &.DiscussionParticipants--large {
+    --dp-size: 32px;
+    --dp-overlap: -8px;
+  }
+}
+
+// Takes over as the row's flex item so the strip lines up under the
+// title automatically, whatever width the theme gives the author column.
+.DiscussionParticipants-mainWrap {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.DiscussionParticipants--below {
+  margin-top: 6px;
+}
+
+.DiscussionParticipants-list {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.DiscussionParticipants-item {
+  position: relative;
+  // Earlier avatars sit above later ones, so the stack reads in the order
+  // people arrived rather than back to front.
+  z-index: calc(20 - var(--dp-index, 0));
+
+  & + & {
+    margin-inline-start: var(--dp-overlap);
+  }
+}
+
+.DiscussionParticipants-link {
+  display: block;
+  border-radius: 50%;
+  // The ring is what separates one avatar from the one it overlaps, so it
+  // has to be the list's background, not a fixed colour.
+  box-shadow: 0 0 0 2px var(--body-bg);
+  transition: transform 0.1s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    z-index: 1;
+  }
+}
+
+.DiscussionParticipants-avatar {
+  display: block;
+  width: var(--dp-size);
+  height: var(--dp-size);
+  font-size: calc(var(--dp-size) / 2.2);
+}
+
+.DiscussionParticipants-more {
+  height: var(--dp-size);
+  min-width: var(--dp-size);
+  padding: 0 6px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--control-bg);
+  color: var(--control-color);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: var(--dp-size);
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--control-bg);
+    filter: brightness(0.92);
+  }
+}
+
+.DiscussionParticipants-card {
+  position: absolute;
+  // Anchored to the avatar's leading edge rather than centred on it. A
+  // centring translate would need translateX(-50%), which does NOT mirror
+  // under RTL, and would hang a 500px card off the side of a strip that
+  // sits near the start of the row.
+  inset-inline-start: 0;
+  top: calc(100% + 8px);
+  z-index: 100;
+
+  // Core sizes .UserCard--popover at 500px; keep that, but never let it
+  // push past the viewport on a narrow window.
+  max-width: calc(100vw - 32px);
+}
+
+// Inline strips compete with the title for a phone's width, so they are
+// the first thing to go. The "below" placement has its own line and
+// costs nothing, so it stays.
+@media (max-width: 767px) {
+  .DiscussionParticipants--inline {
+    display: none;
+  }
+}
+
+.ParticipantsModal {
+  &-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+
+    & + & {
+      border-top: 1px solid var(--control-bg);
+    }
+  }
+
+  &-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    color: var(--text-color);
+
+    &:hover {
+      color: var(--link-color);
+    }
+  }
+
+  &-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  &-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    color: var(--muted-color);
+    font-size: 12px;
+  }
+
+  &-badge {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--control-bg);
+    color: var(--control-color);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  &-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  &-page {
+    color: var(--muted-color);
+    font-size: 13px;
+  }
+
+  &-error {
+    color: var(--alert-error-color);
+  }
+}
