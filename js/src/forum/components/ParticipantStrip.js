@@ -84,11 +84,15 @@ export default class ParticipantStrip extends Component {
 
   avatarItem(user, index) {
     const showCards = !!app.forum.attribute('participantsHoverCards');
+    const carded = showCards && getHoveredUser(this.attrs.discussion.id()) === user.id();
 
     return m(
       'li',
       {
-        className: 'DiscussionParticipants-item',
+        // `is-carded` lifts this item above its neighbours while its card is
+        // open. Without it the card is trapped in a stacking context ranked
+        // BELOW the avatars that arrived earlier, so they paint over it.
+        className: 'DiscussionParticipants-item' + (carded ? ' is-carded' : ''),
         // Earlier avatars sit on top of later ones, so the stack reads
         // left to right in the order people arrived.
         style: { '--dp-index': index },
@@ -102,11 +106,15 @@ export default class ParticipantStrip extends Component {
           {
             href: app.route.user(user),
             className: 'DiscussionParticipants-link',
-            title: user.displayName(),
+            // The card already says whose it is, in bigger type than a
+            // tooltip. Leaving the title on means the browser's own tooltip
+            // hovers over the card that replaced it — two labels for one
+            // avatar, one of them covering the other.
+            title: carded ? undefined : user.displayName(),
           },
           m(Avatar, { user, className: 'DiscussionParticipants-avatar' })
         ),
-        showCards && getHoveredUser(this.attrs.discussion.id()) === user.id()
+        carded
           ? m(UserCard, {
               user,
               className: 'UserCard--popover DiscussionParticipants-card',

@@ -47,6 +47,16 @@
   // people arrived rather than back to front.
   z-index: calc(20 - var(--dp-index, 0));
 
+  // 🚨 While its card is open, this item outranks every avatar in the strip.
+  //
+  // The z-index above makes each item its own stacking context, so the card's
+  // own z-index only competes INSIDE its item — against nothing. Between
+  // items, the card inherits its item's rank, so hovering the fourth avatar
+  // put its card underneath the first three.
+  &.is-carded {
+    z-index: 200;
+  }
+
   & + & {
     margin-inline-start: var(--dp-overlap);
   }
@@ -72,10 +82,16 @@
 // width/height directly leaves font-size on core's 48px default, so the
 // letter overflows its circle and gets clipped.
 //
-// The descendant selector is deliberate: `.DiscussionParticipants-avatar`
-// alone ties with core's `.Avatar` on specificity, and which one wins then
-// depends on stylesheet order.
-.DiscussionParticipants .Avatar {
+// Two classes rather than one: `.DiscussionParticipants-avatar` alone ties
+// with core's `.Avatar` on specificity, and which one wins then depends on
+// stylesheet order.
+//
+// 🚨 Scoped to the LINK, not the whole strip. As a descendant of
+// `.DiscussionParticipants` this also matched the avatar inside the hover
+// card — which is a profile card, and was being squashed to the 24px of a
+// stacked list avatar. The card keeps whatever size the rest of the site
+// gives a user card.
+.DiscussionParticipants-link .Avatar {
   --size: var(--dp-size);
   display: inline-flex;
 }
