@@ -2,9 +2,10 @@
 
 namespace Ernestdefoe\DiscussionParticipants\Console;
 
+use Ernestdefoe\DiscussionParticipants\DiscussionParticipant;
 use Ernestdefoe\DiscussionParticipants\ParticipantSynchronizer;
 use Flarum\Console\AbstractCommand;
-use Illuminate\Database\ConnectionInterface;
+use Flarum\Discussion\Discussion;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -19,7 +20,6 @@ class PopulateCommand extends AbstractCommand
 
     public function __construct(
         protected ParticipantSynchronizer $sync,
-        protected ConnectionInterface $db,
     ) {
         parent::__construct();
     }
@@ -34,7 +34,7 @@ class PopulateCommand extends AbstractCommand
     protected function fire(): int
     {
         $chunk = max(1, (int) $this->input->getOption('chunk'));
-        $max = (int) $this->db->table('discussions')->max('id');
+        $max = (int) Discussion::query()->max('id');
 
         if ($max === 0) {
             $this->info('No discussions to populate.');
@@ -53,7 +53,7 @@ class PopulateCommand extends AbstractCommand
         $progress->finish();
         $this->output->writeln('');
 
-        $rows = (int) $this->db->table('discussion_participants')->count();
+        $rows = DiscussionParticipant::query()->count();
         $this->info("Done. {$rows} participant records across {$max} discussion ids.");
 
         return 0;

@@ -3,9 +3,10 @@
 namespace Ernestdefoe\DiscussionParticipants\Api\Controller;
 
 use Ernestdefoe\DiscussionParticipants\Console\PopulateCommand;
+use Ernestdefoe\DiscussionParticipants\DiscussionParticipant;
 use Ernestdefoe\DiscussionParticipants\ParticipantSynchronizer;
+use Flarum\Discussion\Discussion;
 use Flarum\Http\RequestUtil;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
@@ -23,7 +24,6 @@ class RebuildController implements RequestHandlerInterface
 {
     public function __construct(
         protected ParticipantSynchronizer $sync,
-        protected ConnectionInterface $db,
     ) {
     }
 
@@ -35,7 +35,7 @@ class RebuildController implements RequestHandlerInterface
         $from = max(1, (int) Arr::get($body, 'from', 1));
         $chunk = max(1, min(2000, (int) Arr::get($body, 'chunk', PopulateCommand::CHUNK)));
 
-        $max = (int) $this->db->table('discussions')->max('id');
+        $max = (int) Discussion::query()->max('id');
 
         if ($max === 0) {
             return new JsonResponse(['done' => true, 'next' => null, 'max' => 0, 'records' => 0]);
@@ -51,7 +51,7 @@ class RebuildController implements RequestHandlerInterface
             'next' => $done ? null : $to + 1,
             'max' => $max,
             'processed' => $to,
-            'records' => (int) $this->db->table('discussion_participants')->count(),
+            'records' => DiscussionParticipant::query()->count(),
         ]);
     }
 }

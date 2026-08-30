@@ -9,6 +9,17 @@
 const hovered = {};
 
 export function setHoveredUser(discussionId, userId) {
+  // Closing a card DELETES the key rather than storing null. The strip already
+  // calls this with null on mouse-out, so without the delete the map kept one
+  // entry for every discussion the reader had ever hovered — on a long scroll,
+  // thousands of keys that could never be read again. At most one entry lives
+  // here now: whichever card is currently open.
+  if (userId == null) {
+    delete hovered[discussionId];
+
+    return;
+  }
+
   hovered[discussionId] = userId;
 }
 
