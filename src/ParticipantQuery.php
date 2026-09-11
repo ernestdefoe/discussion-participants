@@ -60,7 +60,19 @@ class ParticipantQuery
             // starter has since been deleted has a NULL user_id, and
             // `user_id != NULL` is NULL, which would silently drop every
             // participant on that discussion.
-            $notTheStarter = 'discussion_participants.user_id <> COALESCE(dp_discussions.user_id, 0)';
+            /*
+             * 🚨 Both halves of this raw fragment need the table prefix, and
+             * for two different reasons. `discussion_participants` is a plain
+             * table name, which raw SQL never prefixes. `dp_discussions` is an
+             * ALIAS, and Laravel prefixes aliases too — the join above really
+             * emits `xf_discussions as xf_dp_discussions` — so the raw text has
+             * to spell the alias the way the grammar will. Empty prefix leaves
+             * this string exactly as it was.
+             */
+            $prefix = (new Discussion())->getConnection()->getTablePrefix();
+
+            $notTheStarter = $prefix.'discussion_participants.user_id <> COALESCE('
+                .$prefix.'dp_discussions.user_id, 0)';
 
             if ($mode === Settings::OP_NEVER) {
                 $query->whereRaw($notTheStarter);

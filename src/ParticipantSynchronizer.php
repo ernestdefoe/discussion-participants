@@ -161,13 +161,36 @@ class ParticipantSynchronizer
      */
     protected function countQuery(): Builder
     {
+        /*
+         * 🚨 Laravel prefixes the ALIAS as well as the table.
+         *
+         * `from('discussion_participants as dp')` is wrapped by
+         * Grammar::wrapTable(), which calls wrap($table, prefixAlias: true), so
+         * on a forum with the prefix `xf_` the SQL reads
+         * `xf_discussion_participants as xf_dp` — the alias is `xf_dp`, not `dp`.
+         *
+         * Builder references survive that: groupBy('dp.discussion_id') and
+         * where('dp.…') go through wrapSegments(), which wrapTable()s the first
+         * segment and lands on `xf_dp` too. RAW SQL does not — selectRaw() is
+         * passed through verbatim — so this query asked for `dp.discussion_id`
+         * against a table aliased `xf_dp` and MySQL answered
+         * "Unknown column 'dp.discussion_id'".
+         *
+         * That took out discussion creation entirely on a prefixed forum: the
+         * synchroniser runs on every new post. getTablePrefix() is '' where
+         * there is no prefix, so this is byte-identical there.
+         */
+        $prefix = $this->connection()->getTablePrefix();
+        $dp = $prefix.'dp';
+        $d = $prefix.'d';
+
         return DiscussionParticipant::query()
             ->from('discussion_participants as dp')
             ->join('discussions as d', 'd.id', '=', 'dp.discussion_id')
             ->groupBy('dp.discussion_id')
             ->selectRaw(
-                'dp.discussion_id, COUNT(*) as total, '
-                .'SUM(CASE WHEN dp.user_id <> COALESCE(d.user_id, 0) THEN 1 ELSE 0 END) as repliers'
+                $dp.'.discussion_id, COUNT(*) as total, '
+                .'SUM(CASE WHEN '.$dp.'.user_id <> COALESCE('.$d.'.user_id, 0) THEN 1 ELSE 0 END) as repliers'
             )
             ->toBase();
     }
