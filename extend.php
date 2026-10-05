@@ -1,5 +1,6 @@
 <?php
 
+use Ernestdefoe\DiscussionParticipants\Api\AuthorEagerLoads;
 use Ernestdefoe\DiscussionParticipants\Api\Controller\ListParticipantsController;
 use Ernestdefoe\DiscussionParticipants\Api\Controller\RebuildController;
 use Ernestdefoe\DiscussionParticipants\Console\PopulateCommand;
@@ -77,7 +78,10 @@ return [
                 // hides the relation from the include compiler — and
                 // without this the discussion list lazy loads one query
                 // per row, which is the whole thing this design avoids.
-                ->eagerLoad(['participantMeta', 'participantUsers']);
+                ->eagerLoad(['participantMeta', 'participantUsers'])
+                // The strip's users serialize like any user, so they need
+                // the same relations the author does — see AuthorEagerLoads.
+                ->eagerLoad(fn () => AuthorEagerLoads::for($endpoint));
         }),
 
     // Posting a reply returns the discussion; pulling the participants
