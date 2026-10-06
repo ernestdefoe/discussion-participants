@@ -17,6 +17,7 @@
         }
     ],
     "support": {
+        "forum": "https://discuss.flarum.org/d/39755-discussion-participants-built-using-ai",
         "issues": "https://github.com/ernestdefoe/discussion-participants/issues",
         "source": "https://github.com/ernestdefoe/discussion-participants"
     },
