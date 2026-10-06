@@ -94,9 +94,11 @@ discussion.
 - MySQL 8.0+ / MariaDB 10.6+ (the per-discussion limit uses a window function)
 - Optional: `flarum/tags` for the tag filter
 
-## Discuss
+## Support
 
-Questions, ideas and release notes: [Discussion Participants on discuss.flarum.org](https://discuss.flarum.org/d/39755-discussion-participants-built-using-ai).
+- **Support forum:** [Discussion Participants on ernestdefoe.online](https://ernestdefoe.online/d/77)
+- **Flarum community:** [Discussion Participants on discuss.flarum.org](https://discuss.flarum.org/d/39755-discussion-participants-built-using-ai)
+- **Bug reports:** [GitHub issues](https://github.com/ernestdefoe/discussion-participants/issues)
 
 ## Licence
 
