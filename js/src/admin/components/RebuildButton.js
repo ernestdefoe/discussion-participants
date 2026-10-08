@@ -21,11 +21,7 @@ export default class RebuildButton extends Component {
   view() {
     return m('div', { className: 'Form-group DiscussionParticipants-rebuild' }, [
       m('label', app.translator.trans('ernestdefoe-discussion-participants.admin.rebuild_label')),
-      m(
-        'div',
-        { className: 'helpText' },
-        app.translator.trans('ernestdefoe-discussion-participants.admin.rebuild_help')
-      ),
+      m('div', { className: 'helpText' }, app.translator.trans('ernestdefoe-discussion-participants.admin.rebuild_help')),
       m(
         Button,
         {

@@ -42,10 +42,6 @@ app.initializers.add('ernestdefoe-discussion-participants', () => {
 
     trackHover(this, discussion.id());
 
-    items.add(
-      'participants',
-      m(ParticipantStrip, { discussion, placement: Settings.PLACEMENT_INLINE }),
-      75
-    );
+    items.add('participants', m(ParticipantStrip, { discussion, placement: Settings.PLACEMENT_INLINE }), 75);
   });
 });

@@ -42,11 +42,7 @@ export default class TagFilterSetting extends Component {
 
     return m('div', { className: 'Form-group DiscussionParticipants-tagFilter' }, [
       m('label', app.translator.trans('ernestdefoe-discussion-participants.admin.tags_label')),
-      m(
-        'div',
-        { className: 'helpText' },
-        app.translator.trans('ernestdefoe-discussion-participants.admin.tags_help')
-      ),
+      m('div', { className: 'helpText' }, app.translator.trans('ernestdefoe-discussion-participants.admin.tags_help')),
       this.loading ? m(LoadingIndicator, { display: 'inline' }) : this.picker(),
     ]);
   }
@@ -56,11 +52,7 @@ export default class TagFilterSetting extends Component {
     const tags = (this.tags || []).filter(Boolean);
 
     if (!tags.length) {
-      return m(
-        'p',
-        { className: 'helpText' },
-        app.translator.trans('ernestdefoe-discussion-participants.admin.tags_empty')
-      );
+      return m('p', { className: 'helpText' }, app.translator.trans('ernestdefoe-discussion-participants.admin.tags_empty'));
     }
 
     return m(

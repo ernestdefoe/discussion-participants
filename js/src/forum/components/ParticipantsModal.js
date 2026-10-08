@@ -86,21 +86,13 @@ export default class ParticipantsModal extends Modal {
     };
 
     return m('li', { className: 'ParticipantsModal-row', key: participant.id }, [
-      m(
-        Link,
-        { href: app.route.user(user), className: 'ParticipantsModal-user', onclick: () => this.hide() },
-        [
-          m(Avatar, { user, className: 'ParticipantsModal-avatar' }),
-          m('span', { className: 'ParticipantsModal-name' }, participant.displayName),
-        ]
-      ),
+      m(Link, { href: app.route.user(user), className: 'ParticipantsModal-user', onclick: () => this.hide() }, [
+        m(Avatar, { user, className: 'ParticipantsModal-avatar' }),
+        m('span', { className: 'ParticipantsModal-name' }, participant.displayName),
+      ]),
       m('span', { className: 'ParticipantsModal-meta' }, [
         participant.isOp
-          ? m(
-              'span',
-              { className: 'ParticipantsModal-badge' },
-              app.translator.trans('ernestdefoe-discussion-participants.forum.author_badge')
-            )
+          ? m('span', { className: 'ParticipantsModal-badge' }, app.translator.trans('ernestdefoe-discussion-participants.forum.author_badge'))
           : null,
         m(
           'span',
