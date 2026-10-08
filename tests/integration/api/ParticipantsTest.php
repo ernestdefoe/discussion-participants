@@ -234,11 +234,12 @@ class ParticipantsTest extends TestCase
 
         $t = Carbon::now()->subHours(2);
         for ($d = 10; $d <= 15; $d++) {
-            $this->database()->table('discussions')->insert(['id' => $d, 'title' => "D$d", 'slug' => "d$d", 'created_at' => $t, 'last_posted_at' => $t, 'user_id' => 2, 'first_post_id' => $d * 10, 'comment_count' => 2, 'participant_count' => 2]);
+            $this->database()->table('discussions')->insert(['id' => $d, 'title' => "D$d", 'slug' => "d$d", 'created_at' => $t, 'last_posted_at' => $t, 'user_id' => 2, 'comment_count' => 2, 'participant_count' => 2]);
             $this->database()->table('posts')->insert([
                 ['id' => $d * 10, 'discussion_id' => $d, 'number' => 1, 'user_id' => 2, 'type' => 'comment', 'content' => '<t><p>x</p></t>', 'created_at' => $t],
                 ['id' => $d * 10 + 1, 'discussion_id' => $d, 'number' => 2, 'user_id' => $d - 7, 'type' => 'comment', 'content' => '<t><p>x</p></t>', 'created_at' => $t],
             ]);
+            $this->database()->table('discussions')->where('id', $d)->update(['first_post_id' => $d * 10]);
         }
         $this->populate();
 
