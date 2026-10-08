@@ -8,7 +8,6 @@ use Ernestdefoe\DiscussionParticipants\Listener\SyncParticipants;
 use Ernestdefoe\DiscussionParticipants\ParticipantMeta;
 use Ernestdefoe\DiscussionParticipants\ParticipantQuery;
 use Ernestdefoe\DiscussionParticipants\Settings;
-use Flarum\Api\Context;
 use Flarum\Api\Endpoint;
 use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Api\Resource\PostResource;
