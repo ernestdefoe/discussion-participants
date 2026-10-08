@@ -31,7 +31,7 @@ class AuthorEagerLoads
             // `loadRelations` is protected on HasEagerLoading; read it in the
             // endpoint's own scope. If core ever renames it, the strip just
             // falls back to loading groups.
-            $registered = (fn () => $this->loadRelations ?? [])->call($endpoint);
+            $registered = (fn () => get_object_vars($this)['loadRelations'] ?? [])->call($endpoint);
         } catch (\Throwable) {
             $registered = [];
         }

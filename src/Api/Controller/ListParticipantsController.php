@@ -73,7 +73,7 @@ class ListParticipantsController implements RequestHandlerInterface
                 'displayName' => (string) $user->display_name,
                 'slug' => $this->slugs->forResource(User::class)->toSlug($user),
                 'avatarUrl' => $user->avatar_url ?: null,
-                'posts' => (int) $user->post_count,
+                'posts' => (int) $user->getAttribute('post_count'),
                 'isOp' => (int) $user->id === $opId,
             ])->all(),
         ]);

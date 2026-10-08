@@ -61,7 +61,7 @@ return [
                     // the way down, which the serializer then chokes on.
                     ->get(fn (Discussion $discussion) => $participants->belowThreshold($discussion)
                         ? []
-                        : $discussion->participantUsers->all()),
+                        : $discussion->getAttribute('participantUsers')->all()),
 
                 Schema\Integer::make('participantOverflow')
                     ->get(fn (Discussion $discussion) => $participants->overflow($discussion)),

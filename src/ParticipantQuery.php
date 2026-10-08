@@ -106,7 +106,7 @@ class ParticipantQuery
         }
 
         $opId = (int) $discussion->user_id;
-        $shown = $discussion->participantUsers
+        $shown = $discussion->getAttribute('participantUsers')
             ->filter(fn (User $user) => (int) $user->id !== $opId)
             ->count();
 
@@ -115,12 +115,12 @@ class ParticipantQuery
 
     public function total(Discussion $discussion): int
     {
-        return (int) ($this->meta($discussion)?->participant_count ?? 0);
+        return (int) ($this->meta($discussion)->participant_count ?? 0);
     }
 
     public function replierCount(Discussion $discussion): int
     {
-        return (int) ($this->meta($discussion)?->replier_count ?? 0);
+        return (int) ($this->meta($discussion)->replier_count ?? 0);
     }
 
     /** True when this discussion has too few participants to be worth a strip. */
