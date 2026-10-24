@@ -224,6 +224,41 @@ class ParticipantsTest extends TestCase
     }
 
     #[Test]
+    public function recalculate_walks_the_forum_in_chunks_and_rebuilds_both_tables()
+    {
+        // Stale rows the rebuild must replace, not add to.
+        $this->database()->table('discussion_participants')->insert(['discussion_id' => 1, 'user_id' => 5, 'post_count' => 9]);
+        $this->database()->table('discussion_participant_meta')->insert(['discussion_id' => 1, 'participant_count' => 9, 'replier_count' => 9]);
+
+        $from = 1;
+        $requests = 0;
+        do {
+            $response = $this->send($this->request('POST', '/api/discussion-participants/rebuild', ['authenticatedAs' => 1, 'json' => ['from' => $from, 'chunk' => 1]]));
+            $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+            $body = json_decode((string) $response->getBody(), true);
+            $from = $body['next'];
+            $requests++;
+            $this->assertSame($body['done'] ? 5 : null, $body['records']);
+        } while (! $body['done'] && $requests < 10);
+
+        $this->assertSame(2, $requests, 'one discussion per request');
+
+        $pairs = $this->database()->table('discussion_participants')->orderBy('discussion_id')->orderBy('user_id')
+            ->get(['discussion_id', 'user_id', 'post_count'])
+            ->map(fn ($r) => [(int) $r->discussion_id, (int) $r->user_id, (int) $r->post_count])->all();
+        $this->assertSame([[1, 2, 2], [1, 3, 2], [1, 4, 3], [2, 3, 1], [2, 7, 1]], $pairs);
+
+        $meta = $this->database()->table('discussion_participant_meta')->orderBy('discussion_id')
+            ->get(['discussion_id', 'participant_count', 'replier_count'])
+            ->map(fn ($r) => [(int) $r->discussion_id, (int) $r->participant_count, (int) $r->replier_count])->all();
+        $this->assertSame([[1, 3, 2], [2, 2, 1]], $meta);
+
+        // And the list that reads them still renders.
+        $list = $this->send($this->request('GET', '/api/discussions'));
+        $this->assertSame(200, $list->getStatusCode(), (string) $list->getBody());
+    }
+
+    #[Test]
     public function the_discussion_list_costs_the_same_queries_however_many_discussions_it_shows()
     {
         $this->populate();

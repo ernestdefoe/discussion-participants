@@ -51,7 +51,9 @@ class RebuildController implements RequestHandlerInterface
             'next' => $done ? null : $to + 1,
             'max' => $max,
             'processed' => $to,
-            'records' => DiscussionParticipant::query()->count(),
+            // Counted once, at the end: a full COUNT(*) on every chunk is a
+            // table scan per request on exactly the forums big enough to chunk.
+            'records' => $done ? DiscussionParticipant::query()->count() : null,
         ]);
     }
 }
