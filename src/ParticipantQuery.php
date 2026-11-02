@@ -69,7 +69,7 @@ class ParticipantQuery
              * to spell the alias the way the grammar will. Empty prefix leaves
              * this string exactly as it was.
              */
-            $prefix = (new Discussion())->getConnection()->getTablePrefix();
+            $prefix = $query->getQuery()->getConnection()->getTablePrefix();
 
             $notTheStarter = $prefix.'discussion_participants.user_id <> COALESCE('
                 .$prefix.'dp_discussions.user_id, 0)';

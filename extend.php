@@ -14,6 +14,7 @@ use Flarum\Api\Resource\PostResource;
 use Flarum\Api\Schema;
 use Flarum\Discussion\Discussion;
 use Flarum\Extend;
+use Tobyz\JsonApiServer\Context;
 
 return [
     (new Extend\Frontend('forum'))
@@ -80,7 +81,7 @@ return [
                 ->eagerLoad(['participantMeta', 'participantUsers'])
                 // The strip's users serialize like any user, so they need
                 // the same relations the author does — see AuthorEagerLoads.
-                ->eagerLoad(fn () => AuthorEagerLoads::for($endpoint));
+                ->eagerLoad(fn (array $included, Context $context) => AuthorEagerLoads::for($endpoint, $context));
         }),
 
     // Posting a reply returns the discussion; pulling the participants

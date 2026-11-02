@@ -2,6 +2,7 @@
 
 namespace Ernestdefoe\DiscussionParticipants\Api;
 
+use Tobyz\JsonApiServer\Context;
 use Flarum\Api\Endpoint\Endpoint;
 
 /**
@@ -20,26 +21,34 @@ use Flarum\Api\Endpoint\Endpoint;
  * Mirroring the `user.*` loads rather than naming relations keeps this right
  * for extensions that do not exist yet. The list is read when the request is
  * served, so loads registered by extensions booted after this one are seen.
+ *
+ * Read through core's public HasEagerLoading::getEagerLoadsFor(), the same
+ * call core's EloquentBuffer makes, so it covers plain string loads AND
+ * callable ones (eagerLoadWhenIncluded). That call compiles every registered
+ * load, ours included, so the guard stops it recursing back into itself.
  */
 class AuthorEagerLoads
 {
-    public static function for(Endpoint $endpoint): array
-    {
-        $loads = ['participantUsers.groups'];
+    private static bool $resolving = false;
 
-        try {
-            // `loadRelations` is protected on HasEagerLoading; read it in the
-            // endpoint's own scope. If core ever renames it, the strip just
-            // falls back to loading groups.
-            $registered = (fn () => get_object_vars($this)['loadRelations'] ?? [])->call($endpoint);
-        } catch (\Throwable) {
-            $registered = [];
+    public static function for(Endpoint $endpoint, Context $context): array
+    {
+        if (self::$resolving) {
+            return [];
         }
 
-        foreach ((array) $registered as $relation) {
-            if (is_string($relation) && str_starts_with($relation, 'user.')) {
-                $loads[] = 'participantUsers.'.substr($relation, 5);
-            }
+        $loads = ['participantUsers.groups'];
+
+        self::$resolving = true;
+
+        try {
+            $registered = $endpoint->getEagerLoadsFor('user', $context);
+        } finally {
+            self::$resolving = false;
+        }
+
+        foreach ($registered as $relation) {
+            $loads[] = 'participantUsers.'.$relation;
         }
 
         return array_values(array_unique($loads));

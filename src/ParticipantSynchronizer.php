@@ -221,6 +221,6 @@ class ParticipantSynchronizer
     {
         return $this->visiblePosts()
             ->groupBy('discussion_id', 'user_id')
-            ->selectRaw('discussion_id, user_id, COUNT(*), MIN(created_at), MAX(created_at)');
+            ->selectRaw('discussion_id, user_id, COUNT(*) as post_count, MIN(created_at) as first_post_at, MAX(created_at) as last_post_at');
     }
 }

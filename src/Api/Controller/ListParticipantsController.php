@@ -21,6 +21,12 @@ use Psr\Http\Server\RequestHandlerInterface;
  * Unlike the strip this always includes the person who started the
  * discussion: the modal is the complete answer to "who is in here", so
  * leaving them out would make the total look wrong.
+ *
+ * A plain JSON envelope on purpose, not a JSON:API document: the modal only
+ * reads it to draw one page of rows (with a per-discussion post count that is
+ * not a user attribute), nothing is kept in app.store, and the strip itself —
+ * the part other extensions see — already serves real `users` resources
+ * through the discussion endpoints.
  */
 class ListParticipantsController implements RequestHandlerInterface
 {

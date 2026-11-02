@@ -4,7 +4,10 @@ namespace Ernestdefoe\DiscussionParticipants\Tests\integration\api;
 
 use Carbon\Carbon;
 use Ernestdefoe\DiscussionParticipants\ParticipantSynchronizer;
+use Flarum\Api\Endpoint;
+use Flarum\Api\Resource\DiscussionResource;
 use Flarum\Discussion\Discussion;
+use Flarum\Extend;
 use Flarum\Group\Group;
 use Flarum\Post\Post;
 use Flarum\Testing\integration\RetrievesAuthorizedUsers;
@@ -279,6 +282,36 @@ class ParticipantsTest extends TestCase
         $this->populate();
 
         $this->assertSame($few, $this->queries($list));
+    }
+
+    #[Test]
+    public function the_strip_users_get_whatever_extensions_eager_load_for_the_author()
+    {
+        // One plain load and one callable load, as extensions register them.
+        $this->extend(
+            (new Extend\ApiResource(DiscussionResource::class))
+                ->endpoint(Endpoint\Index::class, fn (Endpoint\Index $endpoint) => $endpoint
+                    ->eagerLoad('user.loginProviders')
+                    ->eagerLoadWhenIncluded(['user' => ['user.emailTokens']]))
+        );
+
+        $this->populate();
+
+        $db = $this->database();
+        $db->flushQueryLog();
+        $db->enableQueryLog();
+        $response = $this->send($this->request('GET', '/api/discussions'));
+        $db->disableQueryLog();
+        $this->assertSame(200, $response->getStatusCode(), (string) $response->getBody());
+
+        // 3 and 4 are strip users only (the starter and last poster are 2),
+        // so they appear in these lookups only if the strip mirrored the load.
+        foreach (['login_providers', 'email_tokens'] as $table) {
+            // Integer keys are inlined into the SQL, not bound.
+            $stripLoad = collect($db->getQueryLog())->first(fn ($q) => str_contains($q['query'], $table)
+                && str_contains($q['query'], 'in (3, 4)'));
+            $this->assertNotNull($stripLoad, "the strip users' $table were not eager loaded");
+        }
     }
 
     private function queries(callable $request): int
